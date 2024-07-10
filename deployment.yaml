@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+  labels:
+    app: django-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      containers:
+      - name: django-container
+        image: kriztoffa/aks-django-app:v2 
+        ports:
+        - containerPort: 80
+        env:
+        - name: ENV_VARIABLE_NAME
+          value: "value"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: django-app
+  name: django-svc
+spec:
+  type: NodePort
+  ports:
+  - name: "vote-service"
+    port: 6000
+    targetPort: 80
+    nodePort: 32500
+  selector:
+    app: django-app
