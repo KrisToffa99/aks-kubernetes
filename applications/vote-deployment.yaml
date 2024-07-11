@@ -20,3 +20,10 @@ spec:
         ports:
         - containerPort: 80
           name: vote
+        volumeMounts:
+        - mountPath: "/data"
+          name: vote-storage
+      volumes:
+      - name: vote-storage
+        persistentVolumeClaim:
+          claimName: vote-pvc
